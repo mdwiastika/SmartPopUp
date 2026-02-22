@@ -7,6 +7,7 @@ use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\SubscriptionUserController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserInformationController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -28,6 +29,7 @@ Route::middleware('api')->group(function () {
             Route::apiResource('subscription-users', SubscriptionUserController::class);
             Route::get('/user-subscription/check-user', [SubscriptionUserController::class, 'checkUserSubscription']);
             Route::apiResource('materials', MaterialController::class)->only(['index', 'show']);
+            Route::apiResource('user-information', UserInformationController::class);
 
 
             Route::middleware('role:admin|superadmin')->group(function () {
