@@ -1,17 +1,25 @@
 <?php
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GradeController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 
-Route::group(['middleware' => 'api'], function () {
-    Route::group(['prefix' => 'auth'], function () {
-        Route::post('/register', [App\Http\Controllers\AuthController::class, 'register']);
-        Route::post('/login', [App\Http\Controllers\AuthController::class, 'login']);
-        Route::post('/refresh', [App\Http\Controllers\AuthController::class, 'refresh']);
-        Route::post('/logout', [App\Http\Controllers\AuthController::class, 'logout']);
+Route::middleware('api')->group(function () {
+    Route::prefix('auth')->group(function () {
+        Route::post('/register', [AuthController::class, 'register']);
+        Route::post('/login', [AuthController::class, 'login']);
+        Route::post('/refresh', [AuthController::class, 'refresh']);
+        Route::post('/logout', [AuthController::class, 'logout']);
     });
 
-    Route::group(['middleware' => 'auth:api'], function () {
-        Route::apiResource('users', App\Http\Controllers\UserController::class);
+    Route::middleware('auth:api')->group(function () {
+        Route::apiResource('users', UserController::class);
+
+        Route::apiResource('grades', GradeController::class)->only(['index', 'show']);
+        Route::middleware('role:admin|superadmin')->group(function () {
+            Route::apiResource('grades', GradeController::class)->only(['store', 'update', 'destroy']);
+        });
     });
 });
