@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DifficultyController;
 use App\Http\Controllers\GradeController;
+use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\SubscriptionUserController;
 use App\Http\Controllers\UserController;
@@ -26,6 +27,7 @@ Route::middleware('api')->group(function () {
             Route::apiResource('subscriptions', SubscriptionController::class)->only(['index', 'show']);
             Route::apiResource('subscription-users', SubscriptionUserController::class);
             Route::get('/user-subscription/check-user', [SubscriptionUserController::class, 'checkUserSubscription']);
+            Route::apiResource('materials', MaterialController::class)->only(['index', 'show']);
 
 
             Route::middleware('role:admin|superadmin')->group(function () {
@@ -33,6 +35,7 @@ Route::middleware('api')->group(function () {
                 Route::apiResource('difficulies', DifficultyController::class)->only(['store', 'update', 'destroy']);
                 Route::apiResource('subscriptions', SubscriptionController::class)->only(['store', 'update', 'destroy']);
                 Route::apiResource('subscription-users', SubscriptionUserController::class)->only(['store', 'update', 'destroy']);
+                Route::apiResource('materials', MaterialController::class)->only(['store', 'update', 'destroy']);
             });
         });
     });
