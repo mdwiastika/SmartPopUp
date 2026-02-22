@@ -15,7 +15,7 @@ class UserController extends Controller
             $users = User::query()->cursorPaginate(10);
             return new UserCollection(true, 'Users retrieved successfully', $users);
         } catch (\Throwable $th) {
-            return new UserCollection(false, 'Failed to retrieve users', null);
+            return new UserCollection(false, 'Failed to retrieve users', []);
         }
     }
 
@@ -29,7 +29,7 @@ class UserController extends Controller
 
             return new UserCollection(true, 'User created successfully', $user);
         } catch (\Throwable $th) {
-            return new UserCollection(false, 'Failed to create user', null);
+            return new UserCollection(false, 'Failed to create user', []);
         }
     }
 
@@ -38,7 +38,7 @@ class UserController extends Controller
         try {
             return new UserCollection(true, 'User retrieved successfully', $user);
         } catch (\Throwable $th) {
-            return new UserCollection(false, 'Failed to retrieve user', null);
+            return new UserCollection(false, 'Failed to retrieve user', []);
         }
     }
 
@@ -50,7 +50,7 @@ class UserController extends Controller
 
             return new UserCollection(true, 'User updated successfully', $user);
         } catch (\Throwable $th) {
-            return new UserCollection(false, 'Failed to update user', null);
+            return new UserCollection(false, 'Failed to update user', []);
         }
     }
 
@@ -58,9 +58,9 @@ class UserController extends Controller
     {
         try {
             $user->delete();
-            return new UserCollection(true, 'User deleted successfully', null);
+            return new UserCollection(true, 'User deleted successfully', []);
         } catch (\Throwable $th) {
-            return new UserCollection(false, 'Failed to delete user', null);
+            return new UserCollection(false, 'Failed to delete user', []);
         }
     }
 }

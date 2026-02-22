@@ -20,15 +20,17 @@ class AuthController extends Controller
 
             $user->assignRole('user');
 
+            $validated['password'] = $request['password'];
+
             $token = Auth::attempt($validated);
 
             if (! $token) {
-                return new UserCollection(false, 'Invalid email or password', null);
+                return new UserCollection(false, 'Invalid email or password', []);
             }
 
             return new UserCollection(true, 'User registered successfully', $this->respondWithToken($token));
         } catch (\Throwable $th) {
-            return new UserCollection(false, 'Failed to register user', null);
+            return new UserCollection(false, 'Failed to register user', []);
         }
     }
 
@@ -37,12 +39,12 @@ class AuthController extends Controller
         try {
             $validated = $request->validated();
             if (! $token = Auth::attempt($validated)) {
-                return new UserCollection(false, 'Invalid email or password', null);
+                return new UserCollection(false, 'Invalid email or password', []);
             }
 
             return UserCollection::make(true, 'User logged in successfully', $this->respondWithToken($token));
         } catch (\Throwable $th) {
-            return new UserCollection(false, 'Failed to login user', null);
+            return new UserCollection(false, 'Failed to login user', []);
         }
     }
 
@@ -52,7 +54,7 @@ class AuthController extends Controller
             $token = Auth::refresh();
             return UserCollection::make(true, 'Token refreshed successfully', $this->respondWithToken($token));
         } catch (\Throwable $th) {
-            return new UserCollection(false, 'Failed to refresh token', null);
+            return new UserCollection(false, 'Failed to refresh token', []);
         }
     }
 
@@ -60,9 +62,9 @@ class AuthController extends Controller
     {
         try {
             Auth::logout();
-            return new UserCollection(true, 'User logged out successfully', null);
+            return new UserCollection(true, 'User logged out successfully', []);
         } catch (\Throwable $th) {
-            return new UserCollection(false, 'Failed to logout user', null);
+            return new UserCollection(false, 'Failed to logout user', []);
         }
     }
 

@@ -26,7 +26,7 @@ class GradeController extends Controller
             $grade = Grade::create($validated);
             return new GradeCollection(true, 'Grade created successfully', $grade);
         } catch (\Throwable $th) {
-            return new GradeCollection(false, 'Failed to create grade', null);
+            return new GradeCollection(false, 'Failed to create grade', []);
         }
     }
 
@@ -35,7 +35,7 @@ class GradeController extends Controller
         try {
             return new GradeCollection(true, 'Grade retrieved successfully', $grade);
         } catch (\Throwable $th) {
-            return new GradeCollection(false, 'Failed to retrieve grade', null);
+            return new GradeCollection(false, 'Failed to retrieve grade', []);
         }
     }
 
@@ -46,7 +46,7 @@ class GradeController extends Controller
             $grade->update($validated);
             return new GradeCollection(true, 'Grade updated successfully', $grade);
         } catch (\Throwable $th) {
-            return new GradeCollection(false, 'Failed to update grade', null);
+            return new GradeCollection(false, 'Failed to update grade', []);
         }
     }
 
@@ -54,9 +54,9 @@ class GradeController extends Controller
     {
         try {
             $grade->delete();
-            return new GradeCollection(true, 'Grade deleted successfully', null);
+            return new GradeCollection(true, 'Grade deleted successfully', []);
         } catch (\Throwable $th) {
-            return new GradeCollection(false, 'Failed to delete grade', null);
+            return new GradeCollection(false, 'Failed to delete grade', []);
         }
     }
 }

@@ -15,7 +15,7 @@ class DifficultyController extends Controller
             $difficulties = Difficulty::all();
             return new DifficultyCollection(true, 'Difficulties retrieved successfully', $difficulties);
         } catch (\Throwable $th) {
-            return new DifficultyCollection(false, 'Failed to retrieve difficulties', null);
+            return new DifficultyCollection(false, 'Failed to retrieve difficulties', []);
         }
     }
 
@@ -26,7 +26,7 @@ class DifficultyController extends Controller
             $difficulty = Difficulty::create($validated);
             return new DifficultyCollection(true, 'Difficulty created successfully', $difficulty);
         } catch (\Throwable $th) {
-            return new DifficultyCollection(false, 'Failed to create difficulty', null);
+            return new DifficultyCollection(false, 'Failed to create difficulty', []);
         }
     }
 
@@ -35,7 +35,7 @@ class DifficultyController extends Controller
         try {
             return new DifficultyCollection(true, 'Difficulty retrieved successfully', $difficulty);
         } catch (\Throwable $th) {
-            return new DifficultyCollection(false, 'Failed to retrieve difficulty', null);
+            return new DifficultyCollection(false, 'Failed to retrieve difficulty', []);
         }
     }
 
@@ -46,7 +46,7 @@ class DifficultyController extends Controller
             $difficulty->update($validated);
             return new DifficultyCollection(true, 'Difficulty updated successfully', $difficulty);
         } catch (\Throwable $th) {
-            return new DifficultyCollection(false, 'Failed to update difficulty', null);
+            return new DifficultyCollection(false, 'Failed to update difficulty', []);
         }
     }
 
@@ -54,9 +54,9 @@ class DifficultyController extends Controller
     {
         try {
             $difficulty->delete();
-            return new DifficultyCollection(true, 'Difficulty deleted successfully', null);
+            return new DifficultyCollection(true, 'Difficulty deleted successfully', []);
         } catch (\Throwable $th) {
-            return new DifficultyCollection(false, 'Failed to delete difficulty', null);
+            return new DifficultyCollection(false, 'Failed to delete difficulty', []);
         }
     }
 }
