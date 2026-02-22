@@ -22,6 +22,7 @@ Route::middleware('api')->group(function () {
 
         Route::middleware('auth:api')->group(function () {
             Route::apiResource('users', UserController::class);
+            Route::get('/my-profile', [UserController::class, 'myProfile']);
 
             Route::apiResource('grades', GradeController::class)->only(['index', 'show']);
             Route::apiResource('difficulies', DifficultyController::class)->only(['index', 'show']);

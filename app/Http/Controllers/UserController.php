@@ -6,6 +6,7 @@ use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Http\Resources\UserCollection;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -61,6 +62,17 @@ class UserController extends Controller
             return new UserCollection(true, 'User deleted successfully', []);
         } catch (\Throwable $th) {
             return new UserCollection(false, 'Failed to delete user', []);
+        }
+    }
+
+    public function myProfile()
+    {
+        try {
+            // return Auth::id();
+            $user = User::query()->where('id', Auth::id())->with(['userInformation'])->first();
+            return new UserCollection(true, 'User profile retrieved successfully', $user);
+        } catch (\Throwable $th) {
+            return new UserCollection(false, $th->getMessage(), []);
         }
     }
 }
