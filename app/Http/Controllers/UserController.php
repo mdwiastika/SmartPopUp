@@ -25,6 +25,8 @@ class UserController extends Controller
             $validated = $request->validated();
             $user = User::create($validated);
 
+            $user->assignRole($validated['roles']);
+
             return new UserCollection(true, 'User created successfully', $user);
         } catch (\Throwable $th) {
             return new UserCollection(false, 'Failed to create user', null);
