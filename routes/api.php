@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DifficultyController;
 use App\Http\Controllers\GradeController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -19,8 +21,14 @@ Route::middleware('api')->group(function () {
             Route::apiResource('users', UserController::class);
 
             Route::apiResource('grades', GradeController::class)->only(['index', 'show']);
+            Route::apiResource('difficulies', DifficultyController::class)->only(['index', 'show']);
+            Route::apiResource('subscriptions', SubscriptionController::class)->only(['index', 'show']);
+
+
             Route::middleware('role:admin|superadmin')->group(function () {
                 Route::apiResource('grades', GradeController::class)->only(['store', 'update', 'destroy']);
+                Route::apiResource('difficulies', DifficultyController::class)->only(['store', 'update', 'destroy']);
+                Route::apiResource('subscriptions', SubscriptionController::class)->only(['store', 'update', 'destroy']);
             });
         });
     });

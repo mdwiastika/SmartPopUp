@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             GradeSeeder::class,
             DifficultySeeder::class,
+            SubscriptionSeeder::class,
         ]);
     }
 }
