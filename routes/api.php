@@ -27,8 +27,8 @@ Route::middleware('api')->group(function () {
             Route::apiResource('grades', GradeController::class)->only(['index', 'show']);
             Route::apiResource('difficulties', DifficultyController::class)->only(['index', 'show']);
             Route::apiResource('subscriptions', SubscriptionController::class)->only(['index', 'show']);
+            Route::get('/subscription-users/check-user', [SubscriptionUserController::class, 'checkUserSubscription']);
             Route::apiResource('subscription-users', SubscriptionUserController::class);
-            Route::get('/user-subscription/check-user', [SubscriptionUserController::class, 'checkUserSubscription']);
             Route::apiResource('materials', MaterialController::class)->only(['index', 'show']);
             Route::apiResource('user-information', UserInformationController::class);
 

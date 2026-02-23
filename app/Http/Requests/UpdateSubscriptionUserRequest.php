@@ -25,9 +25,6 @@ class UpdateSubscriptionUserRequest extends FormRequest
     {
         return [
             'subscription_id' => 'sometimes|required|exists:subscriptions,id',
-            'amount' => 'sometimes|required|numeric',
-            'discount' => 'nullable|numeric|min:0|max:100',
-            'duration' => 'sometimes|required|integer|min:1',
         ];
     }
 
@@ -36,14 +33,6 @@ class UpdateSubscriptionUserRequest extends FormRequest
         return [
             'subscription_id.required' => 'Subscription ID harus diisi',
             'subscription_id.exists' => 'Subscription ID tidak valid',
-            'amount.required' => 'Amount harus diisi',
-            'amount.numeric' => 'Amount harus berupa angka',
-            'discount.numeric' => 'Discount harus berupa angka',
-            'discount.min' => 'Discount minimal 0%',
-            'discount.max' => 'Discount maksimal 100%',
-            'duration.required' => 'Duration harus diisi',
-            'duration.integer' => 'Duration harus berupa integer',
-            'duration.min' => 'Duration minimal 1 bulan',
         ];
     }
 

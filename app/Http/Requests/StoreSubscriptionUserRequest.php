@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Auth;
 
 class StoreSubscriptionUserRequest extends FormRequest
 {
@@ -16,6 +17,13 @@ class StoreSubscriptionUserRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'user_id' => Auth::id(),
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -24,10 +32,8 @@ class StoreSubscriptionUserRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'user_id' => 'required|exists:users,id',
             'subscription_id' => 'required|exists:subscriptions,id',
-            'amount' => 'required|numeric',
-            'discount' => 'nullable|numeric|min:0|max:100',
-            'duration' => 'required|integer|min:1',
         ];
     }
 
@@ -36,14 +42,8 @@ class StoreSubscriptionUserRequest extends FormRequest
         return [
             'subscription_id.required' => 'Subscription ID harus diisi',
             'subscription_id.exists' => 'Subscription ID tidak valid',
-            'amount.required' => 'Amount harus diisi',
-            'amount.numeric' => 'Amount harus berupa angka',
-            'discount.numeric' => 'Discount harus berupa angka',
-            'discount.min' => 'Discount minimal 0%',
-            'discount.max' => 'Discount maksimal 100%',
-            'duration.required' => 'Duration harus diisi',
-            'duration.integer' => 'Duration harus berupa integer',
-            'duration.min' => 'Duration minimal 1 bulan',
+            'user_id.required' => 'User ID harus diisi',
+            'user_id.exists' => 'User ID tidak valid',
         ];
     }
 
