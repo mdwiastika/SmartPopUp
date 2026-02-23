@@ -29,7 +29,6 @@ class UpdateSubscriptionRequest extends FormRequest
             'discount' => 'nullable|numeric|min:0|max:100',
             'duration' => 'sometimes|required|integer|min:1',
             'details' => 'sometimes|required|array|min:1',
-            'details.*' => 'required|string|max:255',
             'details.*.feature' => 'required|string|max:255',
         ];
     }

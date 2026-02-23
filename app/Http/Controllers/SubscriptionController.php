@@ -6,6 +6,7 @@ use App\Http\Requests\StoreSubscriptionRequest;
 use App\Http\Requests\UpdateSubscriptionRequest;
 use App\Http\Resources\SubscriptionCollection;
 use App\Models\Subscription;
+use Illuminate\Support\Facades\DB;
 
 class SubscriptionController extends Controller
 {
@@ -22,16 +23,22 @@ class SubscriptionController extends Controller
     public function store(StoreSubscriptionRequest $request)
     {
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
+            $details = $validated['details'];
+            unset($validated['details']);
             $subscription = Subscription::create($validated);
 
-            foreach ($validated['details'] as $feature) {
-                $subscription->details()->create(['feature' => $feature]);
+            foreach ($details as $feature) {
+                $subscription->details()->create(['feature' => $feature['feature']]);
             }
+
+            DB::commit();
 
             return new SubscriptionCollection(true, 'Subscription created successfully', $subscription->load('details'));
         } catch (\Throwable $th) {
-            return new SubscriptionCollection(false, 'Failed to create subscription', []);
+            DB::rollBack();
+            return new SubscriptionCollection(false, $th->getMessage(), []);
         }
     }
 
@@ -47,18 +54,24 @@ class SubscriptionController extends Controller
     public function update(UpdateSubscriptionRequest $request, Subscription $subscription)
     {
         try {
+            DB::beginTransaction();
             $validated = $request->validated();
+            $details = $validated['details'] ?? null;
+            unset($validated['details']);
             $subscription->update($validated);
 
-            if (isset($validated['details'])) {
+            if (isset($details)) {
                 $subscription->details()->delete();
-                foreach ($validated['details'] as $feature) {
-                    $subscription->details()->create(['feature' => $feature]);
+                foreach ($details as $feature) {
+                    $subscription->details()->create(['feature' => $feature['feature']]);
                 }
             }
 
+            DB::commit();
+
             return new SubscriptionCollection(true, 'Subscription updated successfully', $subscription->load('details'));
         } catch (\Throwable $th) {
+            DB::rollBack();
             return new SubscriptionCollection(false, 'Failed to update subscription', []);
         }
     }
@@ -66,9 +79,14 @@ class SubscriptionController extends Controller
     public function destroy(Subscription $subscription)
     {
         try {
+            DB::beginTransaction();
+            $subscription->details()->delete();
             $subscription->delete();
+
+            DB::commit();
             return new SubscriptionCollection(true, 'Subscription deleted successfully', []);
         } catch (\Throwable $th) {
+            DB::rollBack();
             return new SubscriptionCollection(false, 'Failed to delete subscription', []);
         }
     }
