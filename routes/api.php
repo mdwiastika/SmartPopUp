@@ -25,7 +25,7 @@ Route::middleware('api')->group(function () {
             Route::get('/my-profile', [UserController::class, 'myProfile']);
 
             Route::apiResource('grades', GradeController::class)->only(['index', 'show']);
-            Route::apiResource('difficulies', DifficultyController::class)->only(['index', 'show']);
+            Route::apiResource('difficulties', DifficultyController::class)->only(['index', 'show']);
             Route::apiResource('subscriptions', SubscriptionController::class)->only(['index', 'show']);
             Route::apiResource('subscription-users', SubscriptionUserController::class);
             Route::get('/user-subscription/check-user', [SubscriptionUserController::class, 'checkUserSubscription']);
@@ -35,7 +35,7 @@ Route::middleware('api')->group(function () {
 
             Route::middleware('role:admin|superadmin')->group(function () {
                 Route::apiResource('grades', GradeController::class)->only(['store', 'update', 'destroy']);
-                Route::apiResource('difficulies', DifficultyController::class)->only(['store', 'update', 'destroy']);
+                Route::apiResource('difficulties', DifficultyController::class)->only(['store', 'update', 'destroy']);
                 Route::apiResource('subscriptions', SubscriptionController::class)->only(['store', 'update', 'destroy']);
                 Route::apiResource('subscription-users', SubscriptionUserController::class)->only(['store', 'update', 'destroy']);
                 Route::apiResource('materials', MaterialController::class)->only(['store', 'update', 'destroy']);
