@@ -26,6 +26,7 @@ class StoreQuestionRequest extends FormRequest
         return [
             'grade_id' => 'required|exists:grades,id',
             'difficulty_id' => 'required|exists:difficulties,id',
+            'material_id' => 'required|exists:materials,id',
             'content' => 'required|string',
             'image_url' => 'nullable|url',
             'answer' => 'required|string',
@@ -41,6 +42,8 @@ class StoreQuestionRequest extends FormRequest
             'difficulty_id.exists' => 'Difficulty ID tidak valid',
             'content.required' => 'Konten pertanyaan harus diisi',
             'content.string' => 'Konten pertanyaan harus berupa string',
+            'material_id.required' => 'Material ID harus diisi',
+            'material_id.exists' => 'Material ID tidak valid',
             'image_url.url' => 'URL gambar tidak valid',
             'answer.required' => 'Jawaban harus diisi',
             'answer.string' => 'Jawaban harus berupa string',

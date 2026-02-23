@@ -42,6 +42,7 @@ Route::middleware('api')->group(function () {
                 Route::apiResource('subscription-users', SubscriptionUserController::class)->only(['store', 'update', 'destroy']);
                 Route::apiResource('materials', MaterialController::class)->only(['store', 'update', 'destroy']);
                 Route::apiResource('questions', QuestionController::class)->only(['store', 'update', 'destroy']);
+                Route::post('/questions-import-excel', [QuestionController::class, 'importFromExcel']);
             });
         });
     });

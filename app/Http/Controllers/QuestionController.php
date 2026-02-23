@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\QuestionImportExcelRequest;
 use App\Http\Requests\StoreQuestionRequest;
 use App\Http\Requests\UpdateQuestionRequest;
 use App\Http\Resources\QuestionCollection;
+use App\Imports\QuestionsImport;
 use App\Models\Question;
 use App\Models\UserInformation;
 use Illuminate\Support\Facades\Auth;
+use Maatwebsite\Excel\Facades\Excel;
 
 class QuestionController extends Controller
 {
@@ -21,6 +24,7 @@ class QuestionController extends Controller
             $questions = Question::query()
                 ->where('grade_id', $grade_id)
                 ->where('difficulty_id', $difficulty_id)
+                ->inRandomOrder()
                 ->cursorPaginate(10);
 
             return new QuestionCollection(true, 'Questions retrieved successfully', $questions);
@@ -67,6 +71,16 @@ class QuestionController extends Controller
             return new QuestionCollection(true, 'Question deleted successfully', []);
         } catch (\Throwable $th) {
             return new QuestionCollection(false, 'Failed to delete question', []);
+        }
+    }
+
+    public function importFromExcel(QuestionImportExcelRequest $request)
+    {
+        try {
+            Excel::import(new QuestionsImport, $request->file('file'));
+            return new QuestionCollection(true, 'Questions imported successfully', []);
+        } catch (\Throwable $th) {
+            return new QuestionCollection(false, $th->getMessage(), []);
         }
     }
 }
