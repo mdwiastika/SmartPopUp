@@ -7,6 +7,7 @@ use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\SubscriptionUserController;
+use App\Http\Controllers\UserAnswerController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserInformationController;
 use Illuminate\Support\Facades\Route;
@@ -33,7 +34,10 @@ Route::middleware('api')->group(function () {
             Route::apiResource('materials', MaterialController::class)->only(['index', 'show']);
             Route::apiResource('user-information', UserInformationController::class);
             Route::apiResource('questions', QuestionController::class)->only(['index', 'show']);
-
+            Route::get('/user-answers/history', [UserAnswerController::class, 'history']);
+            Route::get('/user-answers', [UserAnswerController::class, 'index']);
+            Route::post('/user-answers', [UserAnswerController::class, 'store']);
+            Route::get('/user-answers/{id}', [UserAnswerController::class, 'show']);
 
             Route::middleware('role:admin|superadmin')->group(function () {
                 Route::apiResource('grades', GradeController::class)->only(['store', 'update', 'destroy']);
