@@ -7,7 +7,9 @@ use App\Http\Requests\UpdateSubscriptionUserRequest;
 use App\Http\Resources\SubscriptionUserCollection;
 use App\Models\Subscription;
 use App\Models\SubscriptionUser;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class SubscriptionUserController extends Controller
 {
@@ -29,10 +31,87 @@ class SubscriptionUserController extends Controller
             $validated['amount'] = $subscription->amount;
             $validated['discount'] = $subscription->discount;
             $validated['duration'] = $subscription->duration;
+            $validated['status'] = 'SUCCESSFUL';
             $subscriptionUser = SubscriptionUser::create($validated);
             return new SubscriptionUserCollection(true, 'Subscription user created successfully', $subscriptionUser->load(['subscription', 'user']));
         } catch (\Throwable $th) {
             return new SubscriptionUserCollection(false, 'Failed to create subscription user', []);
+        }
+    }
+
+    public function storeWithFlip(StoreSubscriptionUserRequest $request)
+    {
+        try {
+            $validated = $request->validated();
+            $subscription = Subscription::query()->findOrFail($validated['subscription_id']);
+            $validated['amount'] = $subscription->amount;
+            $validated['discount'] = $subscription->discount;
+            $validated['duration'] = $subscription->duration;
+
+            $flipSecretKey = env('FLIP_SECRET_KEY');
+            $flipUrl = 'https://bigflip.id/big_sandbox_api/v2/pwf/bill';
+            $payload = [
+                'title' => $subscription->name,
+                'amount' => $validated['amount'],
+                'sender_name' => Auth::user()->name,
+                'sender_email' => Auth::user()->email,
+                'expired_date' => now()->addHour()->toIso8601String(),
+                'step' => '2',
+                "item_details" => [
+                    [
+                        "name" => $subscription->name,
+                        "price" => $validated['amount'],
+                        "quantity" => 1
+                    ]
+                ]
+            ];
+
+            $headers = [
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Basic ' . base64_encode($flipSecretKey . ':'),
+            ];
+
+            $response = Http::withHeaders($headers)->post($flipUrl, $payload);
+            if ($response->failed()) {
+                throw new \Exception('Failed to create bill with Flip: ' . $response->body());
+            }
+            $responseData = $response->json();
+            $validated['status'] = 'PENDING';
+            $validated['flip_bill_id'] = $responseData['link_id'];
+            $validated['flip_payment_url'] = $responseData['link_url'];
+
+
+            $subscriptionUser = SubscriptionUser::create($validated);
+            return new SubscriptionUserCollection(true, 'Subscription user created successfully', $subscriptionUser->load(['subscription', 'user']));
+        } catch (\Throwable $th) {
+            return new SubscriptionUserCollection(false, 'Failed to create subscription user', []);
+        }
+    }
+
+    public function handleFlipWebhook(Request $request)
+    {
+        try {
+            $rawData = $request->input('data');
+            $token = $request->input('token');
+
+            if ($token !== env('FLIP_TOKEN_VALIDATION')) {
+                return new SubscriptionUserCollection(false, 'Invalid token', []);
+            }
+
+            $data = json_decode($rawData, true);
+
+            if ($data['status'] === 'SUCCESSFUL') {
+                $subscriptionUser = SubscriptionUser::query()->where('flip_bill_id', $data['bill_link_id'])->first();
+                if ($subscriptionUser) {
+                    $subscriptionUser->update([
+                        'status' => 'SUCCESSFUL',
+                    ]);
+                }
+            }
+
+            return new SubscriptionUserCollection(true, 'Webhook handled successfully', []);
+        } catch (\Throwable $th) {
+            return new SubscriptionUserCollection(false, 'Failed to handle webhook: ' . $th->getMessage(), []);
         }
     }
 
@@ -76,6 +155,7 @@ class SubscriptionUserController extends Controller
             $userId = Auth::id();
             $subscriptionUser = SubscriptionUser::query()->where('user_id', $userId)
                 ->whereRaw("created_at + (duration * INTERVAL '1 day') > NOW()")
+                ->where('status', 'SUCCESSFUL')
                 ->with('subscription')
                 ->first();
             if ($subscriptionUser) {

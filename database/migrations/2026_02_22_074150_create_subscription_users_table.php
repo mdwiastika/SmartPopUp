@@ -18,6 +18,9 @@ return new class extends Migration
             $table->decimal('amount');
             $table->float('discount')->default(0);
             $table->integer('duration');
+            $table->string('flip_bill_id')->nullable();
+            $table->string('flip_payment_url')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }

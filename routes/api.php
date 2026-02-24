@@ -29,10 +29,13 @@ Route::middleware('api')->group(function () {
             Route::apiResource('grades', GradeController::class)->only(['index', 'show']);
             Route::apiResource('difficulties', DifficultyController::class)->only(['index', 'show']);
             Route::apiResource('subscriptions', SubscriptionController::class)->only(['index', 'show']);
+            Route::post('/subscription-users/flip-payment', [SubscriptionUserController::class, 'storeWithFlip']);
             Route::get('/subscription-users/check-user', [SubscriptionUserController::class, 'checkUserSubscription']);
+            Route::post('/subscription-users/flip-webhook', [SubscriptionUserController::class, 'handleFlipWebhook']);
             Route::apiResource('subscription-users', SubscriptionUserController::class);
             Route::apiResource('materials', MaterialController::class)->only(['index', 'show']);
             Route::apiResource('user-information', UserInformationController::class);
+            Route::get('/questions/gemini-ai', [QuestionController::class, 'indexViaAGeminiAI']);
             Route::apiResource('questions', QuestionController::class)->only(['index', 'show']);
             Route::get('/user-answers/history', [UserAnswerController::class, 'history']);
             Route::get('/user-answers', [UserAnswerController::class, 'index']);
@@ -43,7 +46,6 @@ Route::middleware('api')->group(function () {
                 Route::apiResource('grades', GradeController::class)->only(['store', 'update', 'destroy']);
                 Route::apiResource('difficulties', DifficultyController::class)->only(['store', 'update', 'destroy']);
                 Route::apiResource('subscriptions', SubscriptionController::class)->only(['store', 'update', 'destroy']);
-                Route::apiResource('subscription-users', SubscriptionUserController::class)->only(['store', 'update', 'destroy']);
                 Route::apiResource('materials', MaterialController::class)->only(['store', 'update', 'destroy']);
                 Route::apiResource('questions', QuestionController::class)->only(['store', 'update', 'destroy']);
                 Route::post('/questions-import-excel', [QuestionController::class, 'importFromExcel']);
