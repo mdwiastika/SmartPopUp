@@ -65,12 +65,14 @@ class QuestionController extends Controller
 
                 1. Jawaban HARUS berupa angka saja.
                 2. Tidak boleh ada huruf, satuan, atau kata tambahan.
-                3. Jika bilangan ribuan atau lebih, gunakan tanda koma sebagai pemisah ribuan.
-                Contoh: 1,250  |  10,000
+                3. Jika bilangan ribuan atau lebih, jangan gunakan tanda koma sebagai pemisah ribuan.
+                Contoh: 1250  |  10000
                 4. Jika jawaban berupa waktu, gunakan format HH:MM (24 jam).
                 Contoh: 09:30  |  14:05
                 5. Jangan gunakan kata seperti 'cm', 'buah', 'bagian', dll.
                 6. Jangan gunakan teks seperti 'lebih banyak'.
+                7. Hanya gunakan koma jika angka tersebut adalah desimal.
+                Contoh: 3,5  |  0,75
 
                 🔹 Aturan Soal:
                 - Soal harus sesuai tingkat kelas {$grade}.
