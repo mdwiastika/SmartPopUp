@@ -10,13 +10,14 @@ use App\Imports\QuestionsImport;
 use App\Models\Material;
 use App\Models\Question;
 use App\Models\UserInformation;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Maatwebsite\Excel\Facades\Excel;
 
 class QuestionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         try {
             $userInformation = UserInformation::query()->where('user_id', Auth::id())->firstOrFail();
@@ -25,9 +26,22 @@ class QuestionController extends Controller
 
             $questions = Question::query()
                 ->where('grade_id', $grade_id)
-                ->where('difficulty_id', $difficulty_id)
-                ->inRandomOrder()
-                ->cursorPaginate(10);
+                ->where('difficulty_id', $difficulty_id);
+
+            if ($request->has('material_id')) {
+                $material_ids = $request->query('material_id');
+
+                if (is_string($material_ids)) {
+                    $material_ids = json_decode($material_ids, true);
+                }
+
+                if (is_array($material_ids)) {
+                    $questions->whereIn('material_id', $material_ids);
+                }
+            }
+            $questions = $questions->inRandomOrder()
+                ->cursorPaginate(10);;
+
 
             return new QuestionCollection(true, 'Questions retrieved successfully', $questions);
         } catch (\Throwable $th) {
