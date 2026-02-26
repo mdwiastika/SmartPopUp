@@ -18,11 +18,11 @@ Route::middleware('api')->group(function () {
         Route::prefix('auth')->group(function () {
             Route::post('/register', [AuthController::class, 'register']);
             Route::post('/login', [AuthController::class, 'login']);
-            Route::post('/refresh', [AuthController::class, 'refresh']);
             Route::post('/logout', [AuthController::class, 'logout']);
         });
 
         Route::middleware('auth:api')->group(function () {
+            Route::post('/auth/refresh', [AuthController::class, 'refresh']);
             Route::apiResource('users', UserController::class);
             Route::get('/my-profile', [UserController::class, 'myProfile']);
 
