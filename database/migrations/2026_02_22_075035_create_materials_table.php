@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('materials', function (Blueprint $table) {
             $table->id();
             $table->foreignId('grade_id')->constrained()->onDelete('cascade');
-            $table->string('name');
+            $table->string('name'); 
             $table->text('description')->nullable();
+            $table->text('image_url');
             $table->timestamps();
         });
     }

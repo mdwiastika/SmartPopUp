@@ -28,7 +28,7 @@ class QuestionsImport implements ToCollection, WithHeadingRow, WithValidation
             $materialIds = $rows->pluck('material_id')->unique();
 
             $materials = Material::whereIn('id', $materialIds)
-                ->pluck('grade_id', 'id');
+                ->pluck('grade_id', 'id');  
 
             $insertData = [];
 
