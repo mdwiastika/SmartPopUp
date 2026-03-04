@@ -85,7 +85,9 @@ class SubscriptionUserController extends Controller
             $subscriptionUser = SubscriptionUser::create($validated);
             return new SubscriptionUserCollection(true, 'Subscription user created successfully', $subscriptionUser->load(['subscription', 'user']));
         } catch (\Throwable $th) {
-            return new SubscriptionUserCollection(false, 'Failed to create subscription user', []);
+            return new SubscriptionUserCollection(false, 'Failed to create subscription user', [
+                'message' => $th->getMessage(),
+            ]);
         }
     }
 
