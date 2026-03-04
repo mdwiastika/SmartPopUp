@@ -20,6 +20,7 @@ Route::middleware('api')->group(function () {
             Route::post('/login', [AuthController::class, 'login']);
             Route::post('/logout', [AuthController::class, 'logout']);
         });
+        Route::post('/subscription-users/flip-webhook', [SubscriptionUserController::class, 'handleFlipWebhook']);
 
         Route::middleware('auth:api')->group(function () {
             Route::post('/auth/refresh', [AuthController::class, 'refresh']);
@@ -31,7 +32,6 @@ Route::middleware('api')->group(function () {
             Route::apiResource('subscriptions', SubscriptionController::class)->only(['index', 'show']);
             Route::post('/subscription-users/flip-payment', [SubscriptionUserController::class, 'storeWithFlip']);
             Route::get('/subscription-users/check-user', [SubscriptionUserController::class, 'checkUserSubscription']);
-            Route::post('/subscription-users/flip-webhook', [SubscriptionUserController::class, 'handleFlipWebhook']);
             Route::apiResource('subscription-users', SubscriptionUserController::class);
             Route::apiResource('materials', MaterialController::class)->only(['index', 'show']);
             Route::apiResource('user-information', UserInformationController::class);
