@@ -51,13 +51,14 @@ class SubscriptionUserController extends Controller
 
             $flipSecretKey = env('FLIP_SECRET_KEY');
             $flipUrl = 'https://bigflip.id/big_sandbox_api/v2/pwf/bill';
+            $expiredDate = now()->addHour()->format('Y-m-d H:i');
             $payload = [
                 'title' => $subscription->name,
                 'type' => 'SINGLE',
                 'amount' => (int) $validated['amount'],
                 'sender_name' => Auth::user()->name,
                 'sender_email' => Auth::user()->email,
-                'expired_date' => now()->addHour()->format('Y-m-d H:i'),
+                'expired_date' => $expiredDate,
                 'step' => '2',
                 "item_details" => [
                     [
@@ -88,6 +89,7 @@ class SubscriptionUserController extends Controller
         } catch (\Throwable $th) {
             return new SubscriptionUserCollection(false, 'Failed to create subscription user', [
                 'message' => $th->getMessage(),
+                'expired_date' => $expiredDate ?? null,
             ]);
         }
     }
