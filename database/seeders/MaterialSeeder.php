@@ -14,7 +14,7 @@ class MaterialSeeder extends Seeder
     {
         $materials = [
 
-        ['grade_id' => 1, 'name' => 'Comparing Numbers', 'description' => 'Comparing Numbers for Grade 1', 'image_url' => '/storage/materials/comparing-numbers.svg'],
+        ['grade_id' => 1, 'name' => 'Comparing Numbers', 'description' => 'Comparing Numbers for Grade 1', 'image_url' => '/storage/materials/comparing-number.svg'],
         ['grade_id' => 1, 'name' => 'Addition', 'description' => 'Addition for Grade 1', 'image_url' => '/storage/materials/add.svg'],
         ['grade_id' => 1, 'name' => 'Measurement', 'description' => 'Measurement for Grade 1', 'image_url' => '/storage/materials/measurement.svg'],
         ['grade_id' => 1, 'name' => 'Counting Money', 'description' => 'Counting Money for Grade 1', 'image_url' => '/storage/materials/counting-money.svg'],

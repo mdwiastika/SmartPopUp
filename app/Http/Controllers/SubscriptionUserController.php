@@ -10,6 +10,7 @@ use App\Models\SubscriptionUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class SubscriptionUserController extends Controller
 {
@@ -91,6 +92,7 @@ class SubscriptionUserController extends Controller
     public function handleFlipWebhook(Request $request)
     {
         try {
+            Log::info('Flip Webhook Request', $request->all());
             $rawData = $request->input('data');
             $token = $request->input('token');
 

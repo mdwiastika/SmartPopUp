@@ -13,7 +13,7 @@ class SubscriptionController extends Controller
     public function index()
     {
         try {
-            $subscriptions = Subscription::query()->with('details')->cursorPaginate(10);
+            $subscriptions = Subscription::query()->with('details')->orderBy('created_at', 'asc')->cursorPaginate(10);
             return new SubscriptionCollection(true, 'Subscriptions retrieved successfully', $subscriptions);
         } catch (\Throwable $th) {
             return new SubscriptionCollection(false, 'Failed to retrieve subscriptions', []);
