@@ -54,7 +54,7 @@ class SubscriptionUserController extends Controller
             $payload = [
                 'title' => $subscription->name,
                 'type' => 'SINGLE',
-                'amount' => $validated['amount'],
+                'amount' => (int) $validated['amount'],
                 'sender_name' => Auth::user()->name,
                 'sender_email' => Auth::user()->email,
                 'expired_date' => now()->addHour()->toIso8601String(),
@@ -62,7 +62,7 @@ class SubscriptionUserController extends Controller
                 "item_details" => [
                     [
                         "name" => $subscription->name,
-                        "price" => $validated['amount'],
+                        "price" => (int) $validated['amount'],
                         "quantity" => 1
                     ]
                 ]
