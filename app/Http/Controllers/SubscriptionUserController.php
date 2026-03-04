@@ -57,7 +57,7 @@ class SubscriptionUserController extends Controller
                 'amount' => (int) $validated['amount'],
                 'sender_name' => Auth::user()->name,
                 'sender_email' => Auth::user()->email,
-                'expired_date' => now()->addHour()->toIso8601String(),
+                'expired_date' => now()->addHour()->format('Y-m-d H:i'),
                 'step' => '2',
                 "item_details" => [
                     [
