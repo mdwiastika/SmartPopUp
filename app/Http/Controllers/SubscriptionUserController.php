@@ -53,6 +53,7 @@ class SubscriptionUserController extends Controller
             $flipUrl = 'https://bigflip.id/big_sandbox_api/v2/pwf/bill';
             $payload = [
                 'title' => $subscription->name,
+                'type' => 'SINGLE',
                 'amount' => $validated['amount'],
                 'sender_name' => Auth::user()->name,
                 'sender_email' => Auth::user()->email,
