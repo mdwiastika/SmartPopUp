@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\UserCollection;
+use App\Models\Subscription;
+use App\Models\SubscriptionUser;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -23,6 +25,21 @@ class AuthController extends Controller
             $validated['password'] = $request['password'];
 
             $token = Auth::attempt($validated);
+
+
+            // subscription user id 4
+            $subscription = Subscription::query()->where('amount', 0)->first();
+            $subscriptionUser = [
+                'subscription_id' => $subscription->id,
+                'user_id' => $user->id,
+                'amount' => 0,
+                'discount' => 0,
+                'duration' => 3,
+                'status' => 'SUCCESSFUL',
+                'flip_bill_id' => null,
+                'flip_payment_url' => null,
+            ];
+            SubscriptionUser::create($subscriptionUser);
 
             if (! $token) {
                 return new UserCollection(false, 'Invalid email or password', []);
