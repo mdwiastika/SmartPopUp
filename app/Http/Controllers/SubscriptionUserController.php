@@ -108,7 +108,21 @@ class SubscriptionUserController extends Controller
 
             if ($data['status'] === 'SUCCESSFUL') {
                 $subscriptionUser = SubscriptionUser::query()->where('flip_bill_id', $data['bill_link_id'])->first();
-                if ($subscriptionUser) {
+                $userId = $subscriptionUser->user_id;
+                $checkSubscription = SubscriptionUser::query()->where('user_id', $userId)
+                    ->whereRaw("created_at + (duration * INTERVAL '1 day') > NOW()")
+                    ->where('status', 'SUCCESSFUL')
+                    ->with('subscription')
+                    ->first();
+
+                if ($checkSubscription) {
+                    $duration = $checkSubscription->duration + $subscriptionUser->duration;
+                    $checkSubscription->update([
+                        'duration' => $duration,
+                    ]);
+                    $subscriptionUser->delete();
+                    return new SubscriptionUserCollection(true, 'Existing subscription extended successfully', $checkSubscription);
+                } else {
                     $subscriptionUser->update([
                         'status' => 'SUCCESSFUL',
                     ]);
