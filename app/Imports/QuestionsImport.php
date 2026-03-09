@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Events\BeforeSheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
 class QuestionsImport implements ToCollection, WithHeadingRow, WithValidation
 {
@@ -21,6 +23,17 @@ class QuestionsImport implements ToCollection, WithHeadingRow, WithValidation
         ];
     }
 
+    public function registerEvents(): array
+    {
+        return [
+            BeforeSheet::class => function (BeforeSheet $event) {
+                $sheet = $event->sheet->getDelegate();
+                $sheet->getStyle('E')->getNumberFormat()
+                    ->setFormatCode(NumberFormat::FORMAT_TEXT);
+            }
+        ];
+    }
+
     public function collection($rows)
     {
         try {
@@ -28,7 +41,7 @@ class QuestionsImport implements ToCollection, WithHeadingRow, WithValidation
             $materialIds = $rows->pluck('material_id')->unique();
 
             $materials = Material::whereIn('id', $materialIds)
-                ->pluck('grade_id', 'id');  
+                ->pluck('grade_id', 'id');
 
             $insertData = [];
 
