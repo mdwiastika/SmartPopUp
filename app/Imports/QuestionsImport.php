@@ -23,12 +23,10 @@ class QuestionsImport implements ToCollection, WithHeadingRow, WithValidation
 
     private function parseAnswer($value): string
     {
-        // Jika decimal (hasil konversi Excel dari format time)
         if (is_numeric($value) && $value > 0 && $value < 1) {
             $totalSeconds = round((float) $value * 86400);
             $hours        = floor($totalSeconds / 3600);
             $minutes      = floor(($totalSeconds % 3600) / 60);
-
             return sprintf('%02d:%02d', $hours, $minutes);
         }
 
